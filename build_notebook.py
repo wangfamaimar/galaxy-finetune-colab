@@ -368,7 +368,18 @@ print(train_result.metrics)"""
 cells.append(md("## 10. Evaluate"))
 cells.append(
     code(
-        """if has_val:
+        """# `transformers`' NotebookProgressCallback keeps training-tracker state that is
+# torn down when `trainer.train()` returns, so a *manual* `trainer.evaluate()` call
+# after training raises: "on_train_begin must be called before on_evaluate".
+# Drop that callback before the final eval — the epoch-end evaluations that ran
+# during training already used it correctly.
+try:
+    from transformers.utils.notebook import NotebookProgressCallback
+    trainer.remove_callback(NotebookProgressCallback)
+except Exception:
+    pass
+
+if has_val:
     metrics = trainer.evaluate()
     print(metrics)
 else:
