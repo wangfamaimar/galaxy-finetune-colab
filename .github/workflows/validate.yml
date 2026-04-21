@@ -1,0 +1,36 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install tooling
+        run: pip install --quiet nbformat
+      - name: Validate notebook JSON
+        run: |
+          python - <<'PY'
+          import nbformat, pathlib, sys
+          errors = 0
+          for p in pathlib.Path('notebooks').rglob('*.ipynb'):
+              try:
+                  nb = nbformat.read(p, as_version=4)
+                  nbformat.validate(nb)
+                  print(f"OK  {p}  ({len(nb.cells)} cells)")
+              except Exception as e:
+                  print(f"FAIL {p}: {e}")
+                  errors += 1
+          sys.exit(1 if errors else 0)
+          PY
+      - name: Regenerate notebook and confirm committed copy is up to date
+        run: |
+          python build_notebook.py
+          git diff --exit-code -- notebooks/
