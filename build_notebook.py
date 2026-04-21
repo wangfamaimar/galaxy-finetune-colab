@@ -4,12 +4,23 @@ from __future__ import annotations
 import nbformat as nbf
 
 
+_counter = iter(range(10_000))
+
+
+def _next_id(prefix: str) -> str:
+    return f"{prefix}-{next(_counter):03d}"
+
+
 def md(text: str) -> nbf.NotebookNode:
-    return nbf.v4.new_markdown_cell(text)
+    cell = nbf.v4.new_markdown_cell(text)
+    cell["id"] = _next_id("md")
+    return cell
 
 
 def code(src: str) -> nbf.NotebookNode:
-    return nbf.v4.new_code_cell(src)
+    cell = nbf.v4.new_code_cell(src)
+    cell["id"] = _next_id("code")
+    return cell
 
 
 nb = nbf.v4.new_notebook()
