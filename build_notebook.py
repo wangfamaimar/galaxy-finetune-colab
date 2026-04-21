@@ -130,6 +130,37 @@ print('Output directory:', OUTPUT_DIR)"""
     )
 )
 
+cells.append(
+    md(
+        """## 3b. (Optional) Use the bundled sample images
+
+**Just want to see the whole pipeline run without setting up Drive?** This repo ships with ~15 hand-picked NASA/ESA/Hubble galaxy thumbnails under `sample_data/{E,S,SB}/`. Running the cell below clones the repo into Colab and points `DATA_DIR` at that folder.
+
+This is enough to prove the pipeline works end-to-end (~1 minute of training on a T4) but is **far too few images for a useful model** — swap back to your own Drive folder for real fine-tuning.
+"""
+    )
+)
+
+cells.append(
+    code(
+        """USE_SAMPLE_DATA = False  # set to True for a quick smoke test with the repo's bundled images
+
+if USE_SAMPLE_DATA:
+    import subprocess, os
+    REPO_DIR = '/content/galaxy-finetune-colab'
+    if not os.path.isdir(REPO_DIR):
+        subprocess.run(
+            ['git', 'clone', '--depth=1',
+             'https://github.com/wangfamaimar/galaxy-finetune-colab.git', REPO_DIR],
+            check=True,
+        )
+    DATA_DIR = os.path.join(REPO_DIR, 'sample_data')
+    OUTPUT_DIR = '/content/sample_output'
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    print('Using bundled sample dataset at', DATA_DIR)"""
+    )
+)
+
 cells.append(md("## 4. Inspect the dataset"))
 cells.append(
     code(

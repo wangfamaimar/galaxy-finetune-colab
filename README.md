@@ -46,10 +46,18 @@ Fine-tune [`dima806/galaxy_type_image_detection`](https://huggingface.co/dima806
 - The notebook does light image augmentation (horizontal flip, rotation ≤ 15°, mild colour jitter). Tweak in section 7 if your data isn't rotation-invariant.
 - The base model was trained at 224×224 on the Galaxy DECaLS dataset; `dima806` reports ~78% weighted F1 on the three-class problem.
 
+## Bundled sample dataset
+
+For a zero-setup smoke test, the repo includes ~15 public-domain NASA / ESA / Hubble / ESO galaxy thumbnails under `sample_data/{E,S,SB}/` (5 per class, ~5 MB total). See [`sample_data/SOURCES.md`](sample_data/SOURCES.md) for the list and attributions.
+
+In the notebook, set `USE_SAMPLE_DATA = True` in **section 3b** to clone the repo into Colab and fine-tune on this bundled set — no Drive mount required. The resulting model will only be a toy (few images, few epochs), but it proves the whole pipeline runs end-to-end in ~1 minute on a T4. Use your own Drive dataset for anything serious.
+
 ## Files
 
 - `notebooks/Galaxy_Finetune.ipynb` — the Colab notebook (this is the deliverable).
 - `build_notebook.py` — script that regenerates the notebook. Edit and re-run if you want to change default hyper-parameters.
+- `sample_data/` — bundled public-domain galaxy thumbnails for quick smoke-testing.
+- `scripts/download_samples.py` — re-downloads / refreshes the sample set from Wikipedia's `pageimages` API.
 
 ## License
 
